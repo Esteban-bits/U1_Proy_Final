@@ -1,0 +1,6 @@
+usuario: rootPurif
+
+contraseña: root123
+
+
+ruta de mis usuarios: app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost:3306/usuarios'

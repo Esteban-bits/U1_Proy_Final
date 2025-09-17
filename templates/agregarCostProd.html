@@ -1,0 +1,34 @@
+{% extends "maestra.html" %}
+{% block titulo %}Agregar Costo Producción{% endblock %}
+
+{% block contenido %}
+<div class="container mt-5">
+    <h3 class="mb-4">Agregar Costo Producción</h3>
+
+    <form method="post">
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+    {{ form.materia_prima.label(class="form-label") }}
+    {{ form.materia_prima(class="form-control", id="materia_prima_directa") }}
+</div>
+
+<div class="mb-3">
+    {{ form.mano_obra.label(class="form-label") }}
+    {{ form.mano_obra(class="form-control", id="mano_obra_directa") }}
+</div>
+
+<div class="mb-3">
+    {{ form.costos_indirectos.label(class="form-label") }}
+    {{ form.costos_indirectos(class="form-control", id="costos_indirectos") }}
+</div>
+        <div class="d-flex gap-2">
+            {{ form.submit(class="btn btn-success") }}
+            <a href="{{ url_for('inicio') }}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+
+    <script src="{{ url_for('static', filename='agregarCostoProdValidarCampo.js') }}"></script>
+    
+</div>
+{% endblock %}

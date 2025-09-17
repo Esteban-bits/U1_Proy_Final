@@ -1,0 +1,146 @@
+{% extends "maestra.html" %}
+{% block titulo %} Calcular {% endblock %}
+{% block contenido %}
+
+<div class="container mt-3">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} mt-3 alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
+
+<br>
+<h3 class="text-center">Calculadora Costos Semanal ©Puritronic Diamante</h3>
+<br>
+<br>
+<h5 class="text-center">(Primero deberás calcular el Costo Produccion para despues calcular el Costo Unitario)</h5>
+
+<div class="container mt-5">
+    <div class="card mb-5 shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="mb-0">Costo Producción</h3>
+            <a href="{{ url_for('agregar_costoproduccion') }}" class="btn btn-success">Agregar Costo Producción</a>
+        </div>
+        <h6>Se calcula sumando la Materia Prima, Mano de Obra y Costos Indirectos (La APP lo calcula automáticamente)</h6>
+        <br>
+        <h6 class="text-danger">Mientras el Costo Total de la producción sea Menor que 4000 es un Rendimiento de productividad eficiente, de lo contrario se considera un Costo Alto</h6>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover mb-0">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>ID</th>
+                            <th>Materia Prima</th>
+                            <th>Mano de Obra</th>
+                            <th>Costos Indirectos</th>
+                            <th>Costo Total</th>
+                            <th>Fecha Cálculo</th>
+                            <th>Editar</th>
+                            <th>Eliminar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for prod in costos_produccion %}
+                        <tr>
+                            <td>{{ prod[0] }}</td>
+                            <td>{{ prod[1] }}</td>
+                            <td>{{ prod[2] }}</td>
+                            <td>{{ prod[3] }}</td>
+                            <td class="{{ 'text-success' if prod[4] <= 4000 else 'text-danger' }}">
+                                {{ prod[4] }} <br>
+                                {% if prod[4] <= 4000 %}
+                                    <small class="text-success">Producción eficiente</small>
+                                {% else %}
+                                    <small class="text-danger">Costo alto, revisar procesos</small>
+                                {% endif %}
+                            </td>
+                            <td>{{ prod[5] }}</td>
+                            <td>
+                                <a href="{{ url_for('editar_costoproduccion', id=prod[0]) }}" class="btn btn-info btn-sm">Editar</a>
+                            </td>
+                            <td>
+                                <form action="{{ url_for('eliminar_costoproduccion') }}" method="POST" style="display:inline-block;">
+                                    {{ form_csrf.hidden_tag() }}
+                                    <input type="hidden" name="id" value="{{ prod[0] }}">
+                                    <button class="btn btn-danger btn-sm">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="mb-0">Costo Unitario</h3>
+            <a href="{{ url_for('agregar_costounitario') }}" class="btn btn-success">Agregar Costo Unitario</a>
+        </div>
+        <h6>Se calcula dividiendo el costo total de la producción entre la cantidad de productos (La APP lo calcula automáticamente)</h6>
+        <br>
+        <h6 class="text-danger">Mientras el Costo Unitario sea menor que 15 se considera un buen rendimiento, asi como una Ganancia, de lo contrario se considera un Costo Alto</h6>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover mb-0">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>ID</th>
+                            <th>Producción (Costo Total / Fecha)</th>
+                            <th>Cantidad Productos</th>
+                            <th>Costo Producción Total</th>
+                            <th>Costo Unitario</th>
+                            <th>Fecha Cálculo</th>
+                            <th>Editar</th>
+                            <th>Eliminar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cu in costos_unitarios %}
+                        <tr>
+                            <td>{{ cu[0] }}</td>
+                            <td>
+                                Total: {{ cu[4] }} <br>
+                                Fecha: {{ cu[8] }}
+                            </td>
+                            <td>{{ cu[5] }}</td>
+                            <td>{{ cu[6] }}</td>
+                            <td class="{{ 'text-success' if cu[7] <= 15 else 'text-danger' }}">
+                                {{ "%.2f"|format(cu[7]) }} <br>
+                                {% if cu[7] <= 15 %}
+                                    <small class="text-success">Rendimiento unitario satisfactorio</small>
+                                {% else %}
+                                    <small class="text-danger">Es necesario realizar ajustes en la producción</small>
+                                {% endif %}
+                            </td>
+                            <td>{{ cu[8] }}</td>
+                            <td>
+                                <a href="{{ url_for('editar_costounitario', id=cu[0]) }}" class="btn btn-info btn-sm">Editar</a>
+                            </td>
+                            <td>
+                                <form action="{{ url_for('eliminar_costounitario') }}" method="POST" style="display:inline-block;">
+                                    {{ form_csrf.hidden_tag() }}
+                                    <input type="hidden" name="id" value="{{ cu[0] }}">
+                                    <button class="btn btn-danger btn-sm">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

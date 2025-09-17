@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Purificadora</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="{{ url_for('static', filename='login.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div class="layout">
+
+        <div class="login-card shadow-sm p-4" style="max-width: 400px; width: 100%;">
+            <img src="https://www.puritronic.com.mx/wp-content/uploads/2023/04/LOGO-350-PX.png" 
+                 class="logo-img" 
+                 id="logo" 
+                 width="200" 
+                 height="45" 
+                 alt="Puritronic">
+
+            <h1 class="text-center">Puritronic Diamante</h1>
+            <h5 class="text-center">Calculo de Producción Semanal</h5>
+            <br>
+            <h1 class="text-center">Iniciar Sesión</h1>
+
+            <form method="POST">
+                {{ form.hidden_tag() }}
+
+                <div class="form-group mb-3">
+                    {{ form.usuario.label(class="form-label") }}
+                    {{ form.usuario(class="form-control", id="usuario") }}
+                </div>
+
+                <div class="form-group mb-3">
+                    {{ form.contraseña.label(class="form-label") }}
+                    {{ form.contraseña(class="form-control", id="contraseña") }}
+                </div>
+
+                <div class="form-group text-center">
+                    {{ form.submit(class="btn btn-primary w-100") }}
+                </div>
+            </form>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        {% if category in ["success", "danger", "info"] %}
+                            <div class="alert alert-{{ category }} mt-3">
+                                {{ message }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <script src="{{ url_for('static', filename='validarLogin.js') }}"></script>                
+        </div>
+
+    </div>
+</body>
+</html>
